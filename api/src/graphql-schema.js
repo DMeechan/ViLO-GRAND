@@ -7,7 +7,7 @@ export const typeDefs =
     .toString('utf-8');
 
 export const resolvers = {
-  Query: {
-    usersBySubstring: neo4jgraphql
-  }
+  // Query: {
+  //   usersBySubstring: neo4jgraphql
+  // }
 };

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import UserList from './UserList';
+import ConceptList from './ConceptList';
 
 class App extends Component {
   render() {
@@ -11,6 +12,7 @@ class App extends Component {
           <h1 className="App-title">Welcome to GRANDstack</h1>
         </header>
         
+        <ConceptList />
         <UserList />
       </div>
     );
