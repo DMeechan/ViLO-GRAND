@@ -1,22 +1,63 @@
+type Query {
+  usersBySubstring(substring: String): [User] @cypher(statement: "MATCH (u:User) WHERE toLower(u.name) CONTAINS toLower($substring) RETURN U")
+}
+
+type Mutation {
+  AddConceptToConcept(root: Concept, leaf: Concept): Concept @cypher(statement: "WITH {$root} AS root WITH {$leaf} AS LEAF CREATE(root)-[edge:TEACHES]-(leaf) RETURN root")
+}
+
+# ref to node directly or the ID of the concept?
+
+# 1. implementing the concept to concept mutation (recursive)
+# 2. implementing the recursive cypher statement
+
+# document how the different aspects work
+# neo4j supports edge parameters 
+# https://neo4j.com/developer/kb/comparing-relationship-properties-within-a-path/
+
+# does graphql support that too?
+
+# if not, concepts could contain an [ENUM] value of user defined attributes
+# and use that to determine its parent relationship
+# but that would be a bit messy
+
 type Resource {
   id: ID!
-  title: String
+  title: String!
   institution: String
-  concepts: [Concept] @relation(name: "TEACHES" direction: "BOTH") 
-  # TODO: Should this be OUT or BOTH?
-  description: Description
+  concepts: [Concept] @relation(name: "TEACHES" direction: "OUT")
+  allConcepts: [Concept] @cypher(statement: "MATCH ()")
+  # description: Description @relation(name: "EXPLAINS" direction: "BOTH")
+  description: String
 }
 
 type Concept {
   id: ID!
-  title: String
+  title: String!
+  resource: Resource @relation(name: "TEACHES" direction: "IN")
   concepts: [Concept] @relation(name: "CONTAINS" direction: "BOTH")
-  description: Description
+  description: Description @relation(name: "EXPLAINS" direction: "OUT")
+  visualType: visualType
+}
+ 
+interface Component {
+  id: ID!
+  concept: Concept @relation(name: "EXPLAINS", direction: "IN")
 }
 
-type Description {
+type Description implements Component {
   id: ID!
   body: String
+  concept: Concept @relation(name: "EXPLAINS", direction: "IN")
+}
+
+# concept & resource implements describable ??
+
+enum visualType {
+  root
+  theme
+  default
+  leaf
 }
 
 type User {
@@ -24,28 +65,28 @@ type User {
   name: String
   age: Int
   friends: [User] @relation(name: "FRIENDS", direction: "BOTH")
-  # reviews: [Review] @relation(name: "WROTE", direction: "OUT")
+  reviews: [Review] @relation(name: "WROTE", direction: "OUT")
   # avgStars: Float @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.stars))")
   # numReviews: Int @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN COUNT(r)")
 }
 
-# type Business {
-#   id: ID!
-#   name: String
-#   address: String
-#   city: String
-#   state: String
-#   reviews: [Review] @relation(name: "REVIEWS", direction: "IN")
-#   categories: [Category] @relation(name: "IN_CATEGORY", direction: "OUT")
-# }
+type Business {
+  id: ID!
+  name: String
+  address: String
+  city: String
+  state: String
+  reviews: [Review] @relation(name: "REVIEWS", direction: "IN")
+  # categories: [Category] @relation(name: "IN_CATEGORY", direction: "OUT")
+}
 
-# type Review {
-#   id: ID!
-#   stars: Int
-#   text: String
-#   business: Business @relation(name: "REVIEWS", direction: "OUT")
-#   user: User @relation(name: "WROTE", direction: "IN")
-# }
+type Review {
+  id: ID!
+  stars: Int
+  text: String
+  business: Business @relation(name: "REVIEWS", direction: "OUT")
+  user: User @relation(name: "WROTE", direction: "IN")
+}
 
 # type Category {
 #   name: ID!
