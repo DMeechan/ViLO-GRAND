@@ -3,7 +3,7 @@ type Query {
 }
 
 type Mutation {
-  AddConceptToConcept(root: Concept, leaf: Concept): Concept @cypher(statement: "WITH {$root} AS root WITH {$leaf} AS LEAF CREATE(root)-[edge:TEACHES]-(leaf) RETURN root")
+  AddConceptToConcept(rootId: ID, leafId: ID): Concept @cypher(statement: "MATCH (root) WHERE id(root)=$rootId MATCH (leaf) WHERE id(leaf)=$leafId CREATE(root)-[edge:TEACHES]-(leaf) RETURN root")
 }
 
 # ref to node directly or the ID of the concept?

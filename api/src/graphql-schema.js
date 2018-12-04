@@ -10,10 +10,10 @@ export const resolvers = {
   Query: {
     usersBySubstring: neo4jgraphql
   },
-  // Mutation: {
-    // AddConceptToConcept(object, params, ctx, resolveInfo) {
-    //   return neo4jgraphql(object, params, ctx, resolveInfo, true);
-    // }
-  // }
+  Mutation: {
+    AddConceptToConcept(object, params, ctx, resolveInfo) {
+      return neo4jgraphql(object, params, ctx, resolveInfo, true);
+    }
+  }
 };
 
