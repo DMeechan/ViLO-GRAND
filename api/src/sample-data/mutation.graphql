@@ -1,4 +1,3 @@
-export default `
 mutation {
   r1: CreateResource(
     id: "r1",
@@ -116,4 +115,3 @@ mutation {
   c02c0111: AddConceptToConcept(rootid: "c02", leafid: "c0111") {id}
 
 }
-`

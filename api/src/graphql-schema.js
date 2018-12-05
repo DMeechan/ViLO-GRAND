@@ -8,12 +8,15 @@ export const typeDefs =
 
 export const resolvers = {
   Query: {
-    usersBySubstring: neo4jgraphql
+    // usersBySubstring: neo4jgraphql,
+    allResources: neo4jgraphql
   },
   Mutation: {
     AddConceptToConcept(object, params, ctx, resolveInfo) {
       return neo4jgraphql(object, params, ctx, resolveInfo, true);
-    }
+    },
+    // DeleteAll(object, params, ctx, resolveInfo) {
+    //   return neo4jgraphql(object, params, ctx, resolveInfo, true);
+    // }
   }
 };
-

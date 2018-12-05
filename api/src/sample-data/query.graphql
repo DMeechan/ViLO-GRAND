@@ -1,0 +1,44 @@
+query getResource {
+    Resource(id: "r1") {
+    id
+    title
+    institution
+    allConcepts {
+      ...concept
+    }
+    description
+  }
+}
+
+query getConcept {
+    Concept(id: "c0") {
+    id
+    title
+    allConcepts {
+      ...concept
+    }
+    description {
+      id
+      body
+    }
+  }
+}
+
+fragment concept on Concept {
+    id
+    resource {title}
+    title
+    visualType
+}
+
+query getAllResources {
+  allResources(emptyParam: true) {
+    id
+    title
+    # institution
+    # allConcepts {
+    #   ...concept
+    # }
+    # description
+  }
+}

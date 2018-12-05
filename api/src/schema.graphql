@@ -1,34 +1,28 @@
 type Query {
-  usersBySubstring(substring: String): [User] @cypher(statement: "MATCH (u:User) WHERE toLower(u.name) CONTAINS toLower($substring) RETURN U")
+  # Example
+  # usersBySubstring(substring: String, first: Int = 10, offset: Int = 0): [User] @cypher(statement: "MATCH (u:User) WHERE u.name CONTAINS $substring RETURN u")
+
+  allResources(emptyParam: Boolean): [Resource] @cypher(statement: "MATCH (r: Resource) RETURN r")
 }
 
 type Mutation {
-  AddConceptToConcept(rootId: ID, leafId: ID): Concept @cypher(statement: "MATCH (root) WHERE id(root)=$rootId MATCH (leaf) WHERE id(leaf)=$leafId CREATE(root)-[edge:TEACHES]-(leaf) RETURN root")
+  # Find the root node. Find the leaf node. Then create a TEACHES edge between them
+  AddConceptToConcept(rootid: ID, leafid: ID): Concept @cypher(statement: "MATCH (root:Concept {id: $rootid}) MATCH (leaf:Concept {id: $leafid}) CREATE(root)-[edge:TEACHES]->(leaf) RETURN root")
+
+  # DeleteAll does not work due to this error:
+  # "Cannot read property 'selections' of undefined"
+  # DeleteAll(emptyParam: Boolean): Int @cyper(statement: "MATCH (n) DETACH DELETE (n) RETURN COUNT(n)")
 }
-
-# ref to node directly or the ID of the concept?
-
-# 1. implementing the concept to concept mutation (recursive)
-# 2. implementing the recursive cypher statement
-
-# document how the different aspects work
-# neo4j supports edge parameters 
-# https://neo4j.com/developer/kb/comparing-relationship-properties-within-a-path/
-
-# does graphql support that too?
-
-# if not, concepts could contain an [ENUM] value of user defined attributes
-# and use that to determine its parent relationship
-# but that would be a bit messy
 
 type Resource {
   id: ID!
   title: String!
-  institution: String
+  institution: String # if we want to filter by institution, this should be a node
   concepts: [Concept] @relation(name: "TEACHES" direction: "OUT")
-  allConcepts: [Concept] @cypher(statement: "MATCH ()")
-  # description: Description @relation(name: "EXPLAINS" direction: "BOTH")
+  # Source: https://stackoverflow.com/questions/31079881/simple-recursive-cypher-query/31080118
   description: String
+
+  allConcepts: [Concept] @cypher(statement: "MATCH (this)-[:TEACHES *1..]->(c:Concept) return c")
 }
 
 type Concept {
@@ -37,7 +31,10 @@ type Concept {
   resource: Resource @relation(name: "TEACHES" direction: "IN")
   concepts: [Concept] @relation(name: "CONTAINS" direction: "BOTH")
   description: Description @relation(name: "EXPLAINS" direction: "OUT")
+  # Note: changing the type from Description to Component broke the mutation
   visualType: visualType
+
+  allConcepts: [Concept] @cypher(statement: "MATCH (this)-[:TEACHES *1..]->(c:Concept) return c")
 }
  
 interface Component {
@@ -51,8 +48,6 @@ type Description implements Component {
   concept: Concept @relation(name: "EXPLAINS", direction: "IN")
 }
 
-# concept & resource implements describable ??
-
 enum visualType {
   root
   theme
@@ -60,39 +55,8 @@ enum visualType {
   leaf
 }
 
-type User {
-  id: ID!
-  name: String
-  age: Int
-  friends: [User] @relation(name: "FRIENDS", direction: "BOTH")
-  reviews: [Review] @relation(name: "WROTE", direction: "OUT")
-  # avgStars: Float @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.stars))")
-  # numReviews: Int @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN COUNT(r)")
-}
-
-type Business {
-  id: ID!
-  name: String
-  address: String
-  city: String
-  state: String
-  reviews: [Review] @relation(name: "REVIEWS", direction: "IN")
-  # categories: [Category] @relation(name: "IN_CATEGORY", direction: "OUT")
-}
-
-type Review {
-  id: ID!
-  stars: Int
-  text: String
-  business: Business @relation(name: "REVIEWS", direction: "OUT")
-  user: User @relation(name: "WROTE", direction: "IN")
-}
-
-# type Category {
-#   name: ID!
-#   businesses: [Business] @relation(name: "IN_CATEGORY", direction: "IN")
-# }
 
 # type Query {
-#     usersBySubstring(substring: String, first: Int = 10, offset: Int = 0): [User] @cypher(statement: "MATCH (u:User) WHERE u.name CONTAINS $substring RETURN u")
+
 # }
+
