@@ -1,14 +1,24 @@
-# GRANDstack Starter
+# ViLO - GRAND Stack
 
-This project is a starter for building a [GRANDstack](https://grandstack.io) (GraphQL, React, Apollo, Neo4j Database) application. There are two components to the starter, the UI application (a React app) and the API app (GraphQL server).
+This project is using the [GRAND stack](https://grandstack.io): GraphQL, React, Apollo, Neo4j.
 
-[![Hands On With The GRANDstack Starter](http://img.youtube.com/vi/rPC71lUhK_I/0.jpg)](http://www.youtube.com/watch?v=rPC71lUhK_I "Hands On With The GRANDstack Starter")
+There are three core components in the project:
+
+- `ui` - React web client
+- `api` - Apollo GraphQL server, running on Node.js
+- `neo4j` - database
+
+[Hands on with the GRAND stack](http://www.youtube.com/watch?v=rPC71lUhK_I)
+
+## Some backgound
+
+The main part of this project is the API server. The React app is just a demo and I've had more success with spinning up a Neo4j sandbox than running it locally.
 
 ## Quickstart
 
 ### Docker Compose
 
-To use docker-compose to quickly start please make the following changes
+We can use `docker-compose` to quickly spin things up.
 
 api/.env:
 ```
@@ -65,8 +75,6 @@ A good tutorial can be found here: https://www.youtube.com/watch?v=rPC71lUhK_I
 cd ./api && npm start
 ```
 
-![](api/img/graphql-playground.png)
-
 ### [`/ui`](./ui)
 
 This will start the GraphQL API in the foreground, so in another terminal session start the UI development server:
@@ -75,10 +83,3 @@ This will start the GraphQL API in the foreground, so in another terminal sessio
 ```
 cd ./ui && npm start
 ```
-
-![](ui/img/default-app.png)
-
-See [the project releases](https://github.com/grand-stack/grand-stack-starter/releases) for the changelog.
-
-This project is licensed under the Apache License v2.
-Copyright (c) 2018 Neo4j, Inc.
