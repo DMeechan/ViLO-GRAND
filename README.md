@@ -8,11 +8,23 @@ There are three core components in the project:
 - `api` - Apollo GraphQL server, running on Node.js
 - `neo4j` - database
 
-[Hands on with the GRAND stack](http://www.youtube.com/watch?v=rPC71lUhK_I)
+[Video: hands on with the GRAND stack](http://www.youtube.com/watch?v=rPC71lUhK_I)
 
 ## Some backgound
 
-The main part of this project is the API server. The React app is just a demo and I've had more success with spinning up a Neo4j sandbox than running it locally.
+The core part of this project is the API server. The React app is just a demo and I've had more success with spinning up a Neo4j sandbox than running it locally.
+
+> Why are we using a graph database like Neo4j?
+
+Graph databases are generally a great fit for any scenario where the connections (edges) between nodes is just as important as the nodes themselves, like in a social network.
+
+Considering that ViLO is all about visualizing the connections between learning concepts (so the connections between concepts are super important), Neo4j felt like a perfect fit.
+
+This is what a typical Neo4j CYPHER query and associated visualisation might look like:
+
+![neo4j example query](https://cdn-images-1.medium.com/max/640/1*wIwsGcV9zOJZ2to1UuQn7g.png)
+
+> Learn more about the background of how this project was built (and why we chose this technology stack) here on [Notion](https://www.notion.so/dmeechan/ViLO-b845f695584b43c593db00c3b684c5b9)
 
 ## Quickstart
 
