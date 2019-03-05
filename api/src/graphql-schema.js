@@ -8,7 +8,6 @@ export const typeDefs =
 
 export const resolvers = {
   Query: {
-    // usersBySubstring: neo4jgraphql,
     allResources: neo4jgraphql
   },
   Mutation: {
