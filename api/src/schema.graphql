@@ -19,9 +19,9 @@ type Resource {
   title: String!
   institution: String # if we want to filter by institution, this should be a node
   concepts: [Concept] @relation(name: "TEACHES" direction: "OUT")
-  # Source: https://stackoverflow.com/questions/31079881/simple-recursive-cypher-query/31080118
   description: String
 
+  # Source: https://stackoverflow.com/questions/31079881/simple-recursive-cypher-query/31080118
   allConcepts: [Concept] @cypher(statement: "MATCH (this)-[:TEACHES *1..]->(c:Concept) return c")
 }
 
@@ -34,6 +34,7 @@ type Concept {
   # Note: changing the type from Description to Component broke the mutation
   visualType: visualType
 
+  # Get all child concepts of Concept node
   allConcepts: [Concept] @cypher(statement: "MATCH (this)-[:TEACHES *1..]->(c:Concept) return c")
 }
  
@@ -54,9 +55,3 @@ enum visualType {
   default
   leaf
 }
-
-
-# type Query {
-
-# }
-

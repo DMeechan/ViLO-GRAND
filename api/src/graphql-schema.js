@@ -15,7 +15,8 @@ export const typeDefs =
 
 /**
  * Generate our query and mutation resolvers
- * (using the neo4jgraphql library so we don't have to write them from scratch)
+ * The Cypher queries for these resolvers are defined
+ * inside the `schema.graphql` file
  */
 export const resolvers = {
   Query: {
