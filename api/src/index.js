@@ -11,7 +11,7 @@ import { v1 as neo4j } from 'neo4j-driver';
 import { augmentSchema } from 'neo4j-graphql-js';
 
 // Import our GraphQL type definitions and resolver functions
-import { typeDefs, resolvers } from './graphql-schema';
+import { typeDefs, resolvers } from './schema/graphql-schema';
 
 /**
  * Import all environment variables from the .env file
