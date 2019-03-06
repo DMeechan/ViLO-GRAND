@@ -26,6 +26,10 @@ This is what a typical Neo4j CYPHER query and associated visualisation might loo
 
 > Learn more about the background of how this project was built (and why we chose this technology stack) here on [Notion](https://www.notion.so/dmeechan/ViLO-b845f695584b43c593db00c3b684c5b9)
 
+## Schema
+
+![neo4j database schema](https://i.imgur.com/Qx1JRO7.png)
+
 ## Quickstart
 
 ### Docker Compose
