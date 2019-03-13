@@ -9,61 +9,16 @@ import gql from 'graphql-tag';
 /**
  * Get a resource with (up to) 6 levels of nested child concepts
  */
-const RESOURCE_QUERY = gql`
-  query getResource {
-    Resource(_id: 1) {
-      ...resource
+const CREATE_RESOURCE = gql`
+  mutation {
+    CreateResource(
+      title: "Java"
+      institution: "St Andrews"
+      description: "Java is an object-oriented language"
+    ) {
+      id
+      title
+      institution
     }
-  }
-`;
-
-/**
- * Get a concept with (up to) 5 levels of nested child concepts
- */
-const CONCEPT_QUERY = gql`
-  query getConcept {
-    Concept(_id: 2) {
-      ...concept
-    }
-  }
-`;
-
-const RESOURCE_FRAGMENT = gql`
-  fragment resource on Resource {
-    id
-    title
-    institution
-    description
-    concepts {
-      ...concept
-    }
-  }
-`;
-
-const CONCEPT_FRAGMENT = gql`
-  fragment concept on Concept {
-    ...conceptWithoutChildren
-    concepts {
-      ...conceptWithoutChildren
-      concepts {
-        ...conceptWithoutChildren
-        concepts {
-          ...conceptWithoutChildren
-          concepts {
-            ...conceptWithoutChildren
-            concepts {
-              ...conceptWithoutChildren
-            }
-          }
-        }
-      }
-    }
-  }
-
-  fragment conceptWithoutChildren on Concept {
-    id
-    title
-    # resource { title }
-    # visualType
   }
 `;
