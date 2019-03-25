@@ -15,35 +15,36 @@ type Mutation {
 }
 
 type Resource {
-  id: ID!
+  id: ID
   title: String!
   institution: String # if we want to filter by institution, this should be a node
   concepts: [Concept] @relation(name: "TEACHES" direction: "OUT")
-  # Source: https://stackoverflow.com/questions/31079881/simple-recursive-cypher-query/31080118
   description: String
 
+  # Source: https://stackoverflow.com/questions/31079881/simple-recursive-cypher-query/31080118
   allConcepts: [Concept] @cypher(statement: "MATCH (this)-[:TEACHES *1..]->(c:Concept) return c")
 }
 
 type Concept {
-  id: ID!
+  id: ID
   title: String!
   resource: Resource @relation(name: "TEACHES" direction: "IN")
-  concepts: [Concept] @relation(name: "CONTAINS" direction: "BOTH")
+  concepts: [Concept] @relation(name: "TEACHES" direction: "OUT")
   description: Description @relation(name: "EXPLAINS" direction: "OUT")
   # Note: changing the type from Description to Component broke the mutation
   visualType: visualType
 
+  # Get all child concepts of Concept node
   allConcepts: [Concept] @cypher(statement: "MATCH (this)-[:TEACHES *1..]->(c:Concept) return c")
 }
  
 interface Component {
-  id: ID!
+  id: ID
   concept: Concept @relation(name: "EXPLAINS", direction: "IN")
 }
 
 type Description implements Component {
-  id: ID!
+  id: ID
   body: String
   concept: Concept @relation(name: "EXPLAINS", direction: "IN")
 }
@@ -54,9 +55,3 @@ enum visualType {
   default
   leaf
 }
-
-
-# type Query {
-
-# }
-

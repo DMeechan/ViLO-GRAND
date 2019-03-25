@@ -1,31 +1,31 @@
 {
-  "name": "grand-stack-starter-api",
+  "name": "vilo-api-server",
   "version": "0.0.1",
-  "description": "API app for GRANDstack",
+  "description": "ViLO GraphQL API server, connected to a Neo4j database",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/nodemon --exec babel-node src/index.js",
     "seedDb": "./node_modules/.bin/babel-node src/seed/seed-db.js"
   },
-  "author": "William Lyon",
+  "author": "Daniel Meechan",
   "license": "MIT",
   "dependencies": {
-    "apollo-boost": "^0.1.10",
-    "apollo-cache-inmemory": "^1.2.5",
-    "apollo-client": "^2.3.2",
-    "apollo-link-http": "^1.5.4",
-    "apollo-server": "^2.0.4",
+    "apollo-boost": "^0.1.28",
+    "apollo-cache-inmemory": "^1.5.1",
+    "apollo-client": "^2.5.1",
+    "apollo-link-http": "^1.5.14",
+    "apollo-server": "^2.4.8",
     "dotenv": "^5.0.1",
-    "graphql-tag": "^2.9.2",
-    "graphql-tools": "^4.0.3",
-    "neo4j-driver": "^1.6.1",
-    "neo4j-graphql-js": "^0.2.0",
-    "node-fetch": "^2.1.2"
+    "graphql-tag": "^2.10.1",
+    "graphql-tools": "^4.0.4",
+    "neo4j-driver": "^1.7.3",
+    "neo4j-graphql-js": "^0.2.1",
+    "node-fetch": "^2.3.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "nodemon": "^1.17.5"
+    "nodemon": "^1.18.10"
   }
 }
