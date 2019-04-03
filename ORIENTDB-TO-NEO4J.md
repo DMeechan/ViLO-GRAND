@@ -95,30 +95,26 @@ Nodes / vectors:
         # for the remaining 278: Body contains text and Label == "null"
         # plus there's one where: Body contains text and Label is null
         # body = Label + ": " + Body
-    - Resource: Description
-        - Label => body
-        - Body => body
+    - Resource: Link
+        - Body: body
+        - Label: DELETE
         # 4 Econ Resources contain both Label & Body fields
         # for the remaining 175: Body contains a URL and Label == "null"
         # body = Label + ": " + Body
-    - FullExample: ?
-        - Class1
-        - Class2
-        - Class3
-    - Module: DELETE
+    - FullExample: Example
+        - Class1 => body
+        - Class2 => body
+        - Class3 => body
+    - Module: Module
         - ModuleCode
-    - Error: DELETE
-        - Body
-        - Explanation
+    - Error: Example
+        - Body: body
+        - Explanation: explanation
         - Label: "null"
-    - Lecture: DELETE
-        - Number
+    - Lecture: Lecture
+        - Number: number
 
 # Nodes I couldn't find: Data and Python
-
-RESOURCE TEACHES CONCEPT (bi)
-CONCEPT TEACHES CONCEPT (out?)
-CONCEPT EXPLAINS DESCRIPTION (bi)
 
 Relations / edges:
     - CSError: EXPLAINS
@@ -172,7 +168,7 @@ New node schemas:
 ##### Commands
 
 > [Cypher Cheatsheet](https://gist.github.com/DaniSancas/1d5265fc159a95ff457b940fc5046887)
-> [Source](https://dzone.com/articles/tips-for-fast-batch-updates-of-graph-structures-wi)
+> [Useful resource](https://dzone.com/articles/tips-for-fast-batch-updates-of-graph-structures-wi)
 
 Entity => Resource
 
