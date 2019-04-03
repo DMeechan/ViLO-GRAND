@@ -116,24 +116,28 @@ Nodes / vectors:
 
 # Nodes I couldn't find: Data and Python
 
+RESOURCE TEACHES CONCEPT (bi)
+CONCEPT TEACHES CONCEPT (out?)
+CONCEPT EXPLAINS DESCRIPTION (bi)
+
 Relations / edges:
-    - CSError: 
-    - CSExample: 
-    - CoreError: 
-    - CoreExample: 
-    - DesignExample: 
-    - HasCode: 
-    - MTError: 
-    - MTExample: 
-    - Related: 
-    - appear: 
-    - contain: 
-    - exRelated: 
-    - explain: 
-    - implements: 
-    - produce: 
-    - require: 
-    - teaches: 
+    - CSError: EXPLAINS
+    - CSExample: EXPLAINS
+    - CoreError: EXPLAINS
+    - CoreExample: EXPLAINS
+    - HasCode: EXPLAINS
+    - MTError: EXPLAINS
+    - MTExample: EXPLAINS
+    - appear: EXPLAINS
+    - contain: EXPLAINS
+    - explain: EXPLAINS
+    - produce: EXPLAINS
+    - require: EXPLAINS
+    - Related: TEACHES
+    - exRelated: TEACHES
+    - teaches: TEACHES
+    - implements: N/A
+    - DesignExample: N/A
 
 Old node schemas:
     - Resource:
@@ -247,8 +251,6 @@ REMOVE n:Discussion
 SET n:Description
 ```
 
-<progress marker>
-
 Resource => Description
 
 ```java
@@ -293,9 +295,170 @@ REMOVE n.Explanation
 RETURN n
 ```
 
+###### Migrating relations
+
+CSError => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:CSError]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+CSExample => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:CSExample]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+CoreError => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:CoreError]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+CoreExample => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:CoreExample]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+HasCode => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:HasCode]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+MTError => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:MTError]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+MTExample => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:MTExample]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+appear => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:appear]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+contain => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:contain]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+explain => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:explain]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+produce => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:produce]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+require => EXPLAINS
+
+```java
+MATCH (a)-[oldRelation:require]->(b)
+CREATE (a)-[newRelation:EXPLAINS]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+Related => TEACHES
+
+```java
+MATCH (a)-[oldRelation:Related]->(b)
+CREATE (a)-[newRelation:TEACHES]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+exRelated => TEACHES
+
+```java
+MATCH (a)-[oldRelation:exRelated]->(b)
+CREATE (a)-[newRelation:TEACHES]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+teaches => TEACHES
+
+```java
+MATCH (a)-[oldRelation:teaches]->(b)
+CREATE (a)-[newRelation:TEACHES]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
+Change out any ()-[:EXPLAINS]->(CONCEPT) relations to [:TEACHES]
+
+```java
+MATCH (a)-[oldRelation:EXPLAINS]->(b:Concept)
+CREATE (a)-[newRelation:TEACHES]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
+
 What's left?
 
-- **Relations**
 - FullExample
 - Module
 - Error
