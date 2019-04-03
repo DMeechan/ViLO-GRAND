@@ -86,14 +86,23 @@ Nodes / vectors:
         - Label: title
     - Theme: Concept
         - Name: title
-    - Example: Description
+    - Example: Example
         - Body: body
+        - Explanation: explanation
+        - Label: DELETE
+    - Error: Example
+        - Body: body
+        - Explanation: explanation
+        - Label: DELETE
+    - FullExample: Example
+        - Class1 => body (I'll leave as Class1 for now)
+        - Class2 => body (I'll leave as Class2 for now)
+        - Class3 => body (I'll leave as Class3 for now)
     - Discussion: Description
         - Body => body
         - Label => body
         # 34 Econ Resources contain both Label & Body fields
-        # for the remaining 278: Body contains text and Label == "null"
-        # plus there's one where: Body contains text and Label is null
+        # the remaining 278 contain Body but Label == "null" OR null
         # body = Label + ": " + Body
     - Resource: Link
         - Body: body
@@ -101,16 +110,8 @@ Nodes / vectors:
         # 4 Econ Resources contain both Label & Body fields
         # for the remaining 175: Body contains a URL and Label == "null"
         # body = Label + ": " + Body
-    - FullExample: Example
-        - Class1 => body
-        - Class2 => body
-        - Class3 => body
     - Module: Module
-        - ModuleCode
-    - Error: Example
-        - Body: body
-        - Explanation: explanation
-        - Label: "null"
+        - ModuleCode: code
     - Lecture: Lecture
         - Number: number
 
@@ -135,23 +136,11 @@ Relations / edges:
     - implements: N/A
     - DesignExample: N/A
 
-Old node schemas:
-    - Resource:
-        - Body
-        - Label
-    - Concept:
-        - Label
-    - Construct:
-        - Label
-    - Error:
-        - Body
-    - Example:
-        - Body
-    - Lecture:
-        - Number
-    - Discussion
-
 New node schemas:
+    - Module:
+        - code
+    - Lecture:
+        - number
     - Resource:
         - id
         - title
@@ -163,6 +152,14 @@ New node schemas:
     - Description *implements Component*:
         - id
         - body
+    - Link *implements Component*:
+        - id
+        - body
+    - Example *implements Component*:
+        - id
+        - body
+        - explanation
+        - (sometimes has Class1, Class2, Class3 too)
 ```
 
 ##### Commands
@@ -192,17 +189,6 @@ SET n.title = n.Label
 REMOVE n.Label
 ```
 
-Theme => Concept
-
-```java
-MATCH (n: Theme)
-WHERE n.title IS NULL
-SET n.title = n.Name
-REMOVE n.Name
-REMOVE n:Theme
-SET n:Concept
-```
-
 Construct => Concept
 
 ```java
@@ -214,15 +200,27 @@ REMOVE n:Construct
 SET n:Concept
 ```
 
-Example => Description
+Theme => Concept
 
 ```java
-MATCH (n: Example)
-WHERE n.body IS NULL
+MATCH (n: Theme)
+WHERE n.title IS NULL
+SET n.title = n.Name
+REMOVE n.Name
+REMOVE n:Theme
+SET n:Concept
+```
+
+Example AND Error => Example
+
+```java
+MATCH (n)
+WHERE (n:Example OR n:Error) AND n.body IS NULL
 SET n.body = n.Body
+SET n.explanation = n.Explanation
 REMOVE n.Body
-REMOVE n:Example
-SET n:Description
+REMOVE n.Explanation
+REMOVE n.Label
 ```
 
 Discussion => Description
@@ -247,29 +245,35 @@ REMOVE n:Discussion
 SET n:Description
 ```
 
-Resource => Description
+Resource => Link
 
 ```java
 MATCH (n: Resource)
-WHERE n.title IS NULL AND n.body IS NULL AND (n.Label IS null OR n.Label = "null")
+WHERE n.title IS NULL AND n.body IS NULL
 SET n.body = n.Body
 REMOVE n.Body
 REMOVE n.Label
 REMOVE n:Resource
-SET n:Description
+SET n:Link
 ```
+
+Module => Module
 
 ```java
-MATCH (n: Resource)
-WHERE n.title IS NULL AND NOT n.Label = "null" AND n.Label IS NOT null
-SET n.body = n.Label + ": " + n.Body
-REMOVE n.Body
-REMOVE n.Label
-REMOVE n:Resource
-SET n:Description
+MATCH (n: Module)
+SET n.code = n.ModuleCode
+REMOVE n.ModuleCode
 ```
 
-Fixing Description nodes having `Label` and `Explanation` fields
+Lecture => Lecture
+
+```java
+MATCH (n: Lecture)
+SET n.number = n.Number
+REMOVE n.Number
+```
+
+<!-- Fixing Description nodes having `Label` and `Explanation` fields
 
 ```java
 MATCH (n: Description)
@@ -289,7 +293,7 @@ WHERE n.Explanation IS NOT NULL
 SET n.body = n.body + ": " + n.Explanation
 REMOVE n.Explanation
 RETURN n
-```
+``` -->
 
 ###### Migrating relations
 
