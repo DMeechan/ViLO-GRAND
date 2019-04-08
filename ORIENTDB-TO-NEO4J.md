@@ -95,12 +95,12 @@ Nodes / vectors:
         - Explanation: explanation
         - Label: DELETE
     - FullExample: Example
-        - Class1 => body (I'll leave as Class1 for now)
-        - Class2 => body (I'll leave as Class2 for now)
-        - Class3 => body (I'll leave as Class3 for now)
+        - Class1 => body
+        - Class2 => body
+        - Class3 => body
     - Discussion: Description
-        - Body => body
-        - Label => body
+        - Body: body
+        - Label: DELETE
         # 34 Econ Resources contain both Label & Body fields
         # the remaining 278 contain Body but Label == "null" OR null
         # body = Label + ": " + Body
@@ -115,26 +115,30 @@ Nodes / vectors:
     - Lecture: Lecture
         - Number: number
 
-# Nodes I couldn't find: Data and Python
+# 'Python' nodes don't exist
+# But I can't find any 'Data' nodes, which might indicate lost data
 
 Relations / edges:
-    - CSError: EXPLAINS
-    - CSExample: EXPLAINS
-    - CoreError: EXPLAINS
-    - CoreExample: EXPLAINS
-    - HasCode: EXPLAINS
-    - MTError: EXPLAINS
-    - MTExample: EXPLAINS
-    - appear: EXPLAINS
-    - contain: EXPLAINS
-    - explain: EXPLAINS
-    - produce: EXPLAINS
-    - require: EXPLAINS
-    - Related: TEACHES
-    - exRelated: TEACHES
+    - CSError: CONTAINS
+    - CSExample: CONTAINS
+    - CoreError: CONTAINS
+    - CoreExample: CONTAINS
+    - HasCode: CONTAINS
+    - MTError: CONTAINS
+    - MTExample: CONTAINS
+    - appear: CONTAINS
+    - explain: CONTAINS
+    - produce: CONTAINS
+    - require: CONTAINS
+    - Related: RELATED
+    - exRelated: RELATED
+    - contain: TEACHES
     - teaches: TEACHES
     - implements: N/A
     - DesignExample: N/A
+
+# TODO: make sure all Concept -> Component relations are CONTAINS
+# TODO: remove duplicate edges
 
 New node schemas:
     - Module:
@@ -162,305 +166,4 @@ New node schemas:
         - (sometimes has Class1, Class2, Class3 too)
 ```
 
-##### Commands
-
-> [Cypher Cheatsheet](https://gist.github.com/DaniSancas/1d5265fc159a95ff457b940fc5046887)
-> [Useful resource](https://dzone.com/articles/tips-for-fast-batch-updates-of-graph-structures-wi)
-
-Entity => Resource
-
-```java
-MATCH (n: Entity)
-WHERE n.title IS NULL
-SET n.title = n.Label
-SET n.institution = null
-SET n.description = null
-REMOVE n.Label
-REMOVE n:Entity
-SET n:Resource
-```
-
-Concept => Concept
-
-```java
-MATCH (n: Concept)
-WHERE n.title IS NULL
-SET n.title = n.Label
-REMOVE n.Label
-```
-
-Construct => Concept
-
-```java
-MATCH (n: Construct)
-WHERE n.title IS NULL
-SET n.title = n.Label
-REMOVE n.Label
-REMOVE n:Construct
-SET n:Concept
-```
-
-Theme => Concept
-
-```java
-MATCH (n: Theme)
-WHERE n.title IS NULL
-SET n.title = n.Name
-REMOVE n.Name
-REMOVE n:Theme
-SET n:Concept
-```
-
-Example AND Error => Example
-
-```java
-MATCH (n)
-WHERE (n:Example OR n:Error) AND n.body IS NULL
-SET n.body = n.Body
-SET n.explanation = n.Explanation
-REMOVE n.Body
-REMOVE n.Explanation
-REMOVE n.Label
-```
-
-Discussion => Description
-
-```java
-MATCH (n: Discussion)
-WHERE n.body IS NULL AND NOT n.Label = "null" AND n.Label IS NOT null
-SET n.body = n.Label + ": " + n.Body
-REMOVE n.Body
-REMOVE n.Label
-REMOVE n:Discussion
-SET n:Description
-```
-
-```java
-MATCH (n: Discussion)
-WHERE n.body IS NULL AND (n.Label IS null OR n.Label = "null")
-SET n.body = n.Body
-REMOVE n.Body
-REMOVE n.Label
-REMOVE n:Discussion
-SET n:Description
-```
-
-Resource => Link
-
-```java
-MATCH (n: Resource)
-WHERE n.title IS NULL AND n.body IS NULL
-SET n.body = n.Body
-REMOVE n.Body
-REMOVE n.Label
-REMOVE n:Resource
-SET n:Link
-```
-
-Module => Module
-
-```java
-MATCH (n: Module)
-SET n.code = n.ModuleCode
-REMOVE n.ModuleCode
-```
-
-Lecture => Lecture
-
-```java
-MATCH (n: Lecture)
-SET n.number = n.Number
-REMOVE n.Number
-```
-
-<!-- Fixing Description nodes having `Label` and `Explanation` fields
-
-```java
-MATCH (n: Description)
-WHERE n.Label = "null"
-REMOVE n.Label
-```
-
-```java
-MATCH (n: Description)
-WHERE n.Explanation = "null"
-REMOVE n.Explanation
-```
-
-```java
-MATCH (n: Description)
-WHERE n.Explanation IS NOT NULL
-SET n.body = n.body + ": " + n.Explanation
-REMOVE n.Explanation
-RETURN n
-``` -->
-
-###### Migrating relations
-
-CSError => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:CSError]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-CSExample => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:CSExample]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-CoreError => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:CoreError]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-CoreExample => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:CoreExample]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-HasCode => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:HasCode]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-MTError => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:MTError]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-MTExample => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:MTExample]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-appear => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:appear]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-contain => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:contain]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-explain => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:explain]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-produce => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:produce]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-require => EXPLAINS
-
-```java
-MATCH (a)-[oldRelation:require]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-Related => TEACHES
-
-```java
-MATCH (a)-[oldRelation:Related]->(b)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-exRelated => TEACHES
-
-```java
-MATCH (a)-[oldRelation:exRelated]->(b)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-teaches => TEACHES
-
-```java
-MATCH (a)-[oldRelation:teaches]->(b)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-Change out any ()-[:EXPLAINS]->(CONCEPT) relations to [:TEACHES]
-
-```java
-MATCH (a)-[oldRelation:EXPLAINS]->(b:Concept)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-What's left?
-
-- FullExample
-- Module
-- Error
-- Lecture
-- Resources should probably have `institution` and `description` fields assigned
+See *MIGRATION-SCRIPT.MD*.
