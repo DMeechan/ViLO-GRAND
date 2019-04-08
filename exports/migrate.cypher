@@ -1,196 +1,168 @@
+// Migrating to the new schema
+
+// > [Cypher Cheatsheet](https://gist.github.com/DaniSancas/1d5265fc159a95ff457b940fc5046887)
+// > [Useful resource](https://dzone.com/articles/tips-for-fast-batch-updates-of-graph-structures-wi)
+
+// ## Nodes
+
+// ### Resources
+
 // Entity => Resource
 
-MATCH (n: Entity)
-WHERE n.title IS NULL
-SET n.title = n.Label
-SET n.institution = null
-SET n.description = null
-REMOVE n.Label
-REMOVE n:Entity
-SET n:Resource
+MATCH (e: Entity)
+WHERE e.title IS NULL
+SET e.title = e.Label
+SET e.institution = null
+SET e.description = null
+REMOVE e.Label
+REMOVE e:Entity
+SET e:Resource;
 
-// Concept => Concept
+// ### Concepts
 
-MATCH (n: Concept)
-WHERE n.title IS NULL
-SET n.title = n.Label
-REMOVE n.Label
+// Concept & Construct => Concept
 
-// Construct => Concept
-
-MATCH (n: Construct)
-WHERE n.title IS NULL
-SET n.title = n.Label
-REMOVE n.Label
-REMOVE n:Construct
-SET n:Concept
+MATCH (c)
+WHERE (c:Concept OR c: Construct) AND c.title IS NULL
+SET c.title = c.Label
+REMOVE c.Label
+REMOVE c:Construct
+SET c:Concept;
 
 // Theme => Concept
 
-MATCH (n: Theme)
-WHERE n.title IS NULL
-SET n.title = n.Name
-REMOVE n.Name
-REMOVE n:Theme
-SET n:Concept
+MATCH (t: Theme)
+WHERE t.title IS NULL
+SET t.title = t.Name
+REMOVE t.Name
+REMOVE t:Theme
+SET t:Concept;
+
+// ### Components (Examples, Descriptions, Links)
 
 // Example AND Error => Example
 
-MATCH (n)
-WHERE (n:Example OR n:Error) AND n.body IS NULL
-SET n.body = n.Body
-SET n.explanation = n.Explanation
-REMOVE n.Body
-REMOVE n.Explanation
-REMOVE n.Label
+MATCH (ee)
+WHERE (ee:Example OR ee:Error) AND ee.body IS NULL
+SET ee.body = ee.Body
+SET ee.explanation = ee.Explanation
+REMOVE ee.Body
+REMOVE ee.Explanation
+REMOVE ee.Label
+REMOVE ee:Error
+SET ee:Example;
+
+// FullExample => Example
+
+// > Find and set Class1, Class2, and Class3 to "" if they're currently "null"
+
+MATCH (fe1:FullExample)
+WHERE fe1.Class1 = "null"
+SET fe1.Class1 = "";
+
+MATCH (fe2:FullExample)
+WHERE fe2.Class2 = "null"
+SET fe2.Class2 = "";
+
+MATCH (fe3:FullExample)
+WHERE fe3.Class3 = "null"
+SET fe3.Class3 = "";
+
+// > Now append Class1, Class2, and Class3 to create our 'body' field
+
+MATCH (fe: FullExample)
+WHERE fe.body IS NULL
+SET fe.body = fe.Class1 + fe.Class2 + fe.Class3
+REMOVE fe.Class1
+REMOVE fe.Class2
+REMOVE fe.Class3
+REMOVE fe:FullExample
+SET fe:Example;
 
 // Discussion => Description
 
-MATCH (n: Discussion)
-WHERE n.body IS NULL AND NOT n.Label = "null" AND n.Label IS NOT null
-SET n.body = n.Label + ": " + n.Body
-REMOVE n.Body
-REMOVE n.Label
-REMOVE n:Discussion
-SET n:Description
-
-MATCH (n: Discussion)
-WHERE n.body IS NULL AND (n.Label IS null OR n.Label = "null")
-SET n.body = n.Body
-REMOVE n.Body
-REMOVE n.Label
-REMOVE n:Discussion
-SET n:Description
+MATCH (d: Discussion)
+WHERE d.body IS NULL
+SET d.body = d.Body
+REMOVE d.Body
+REMOVE d.Label
+REMOVE d:Discussion
+SET d:Description;
 
 // Resource => Link
 
-MATCH (n: Resource)
-WHERE n.title IS NULL AND n.body IS NULL
-SET n.body = n.Body
-REMOVE n.Body
-REMOVE n.Label
-REMOVE n:Resource
-SET n:Link
-Module => Module
+MATCH (r: Resource)
+WHERE r.title IS NULL AND r.body IS NULL
+SET r.body = r.Body
+REMOVE r.Body
+REMOVE r.Label
+REMOVE r:Resource
+SET r:Link;
 
-MATCH (n: Module)
-SET n.code = n.ModuleCode
-REMOVE n.ModuleCode
-Lecture => Lecture
+// ### Modules & Lectures
 
-MATCH (n: Lecture)
-SET n.number = n.Number
-REMOVE n.Number
-Migrating relations
-CSError => EXPLAINS
+// Module => Module
 
-MATCH (a)-[oldRelation:CSError]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-CSExample => EXPLAINS
+MATCH (m: Module)
+SET m.code = m.ModuleCode
+REMOVE m.ModuleCode;
 
-MATCH (a)-[oldRelation:CSExample]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-CoreError => EXPLAINS
+// Lecture => Lecture
 
-MATCH (a)-[oldRelation:CoreError]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-CoreExample => EXPLAINS
+MATCH (l: Lecture)
+SET l.number = l.Number
+REMOVE l.Number;
 
-MATCH (a)-[oldRelation:CoreExample]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-HasCode => EXPLAINS
+// ## Relations
 
-MATCH (a)-[oldRelation:HasCode]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-MTError => EXPLAINS
+// **CONTAINS**: CSError, CSExample, CoreError, CoreExample, HasCode, MTError, MTExample, appear, explain, produce, require
 
-MATCH (a)-[oldRelation:MTError]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-MTExample => EXPLAINS
+MATCH (ocA)-[oldContains :CSError
+ | :CSExample
+ | :CoreError
+ | :CoreExample
+ | :HasCode
+ | :MTError
+ | :MTExample
+ | :appear
+ | :explain
+ | :produce
+ | :require
+]->(ocB)
+CREATE (ocA)-[newContains:CONTAINS]->(ocB)
+SET newContains = oldContains
+WITH oldContains
+DELETE oldContains;
 
-MATCH (a)-[oldRelation:MTExample]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-appear => EXPLAINS
+// **RELATED**: Related, exRelated
 
-MATCH (a)-[oldRelation:appear]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-contain => EXPLAINS
+MATCH (orA)-[oldRelated :Related | :exRelated]->(orB)
+CREATE (orA)-[newRelated:RELATED]->(orB)
+SET newRelated = oldRelated
+WITH oldRelated
+DELETE oldRelated;
 
-MATCH (a)-[oldRelation:contain]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-explain => EXPLAINS
+// **TEACHES**: contain, teaches
 
-MATCH (a)-[oldRelation:explain]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-produce => EXPLAINS
+MATCH (otA)-[oldTeaches :contain | :teaches]->(otB)
+CREATE (otA)-[newTeaches:TEACHES]->(otB)
+SET newTeaches = oldTeaches
+WITH oldTeaches
+DELETE oldTeaches;
 
-MATCH (a)-[oldRelation:produce]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-require => EXPLAINS
+// Replace any ()-[:CONTAINS]->(:CONCEPT) relations to [:TEACHES]
 
-MATCH (a)-[oldRelation:require]->(b)
-CREATE (a)-[newRelation:EXPLAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-Related => TEACHES
+MATCH (oc1A)-[oldCleanup1:CONTAINS]->(oc1B:Concept)
+CREATE (oc1A)-[newCleanup1:TEACHES]->(oc1B)
+SET newCleanup1 = oldCleanup1
+WITH oldCleanup1
+DELETE oldCleanup1;
 
-MATCH (a)-[oldRelation:Related]->(b)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-exRelated => TEACHES
+// Ensure all any (:Concept)-[]->(:Example OR :Description OR :Link) relations are [:CONTAINS]
 
-MATCH (a)-[oldRelation:exRelated]->(b)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-teaches => TEACHES
-
-MATCH (a)-[oldRelation:teaches]->(b)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-Change out any ()-[:EXPLAINS]->(CONCEPT) relations to [:TEACHES]
-
-MATCH (a)-[oldRelation:EXPLAINS]->(b:Concept)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
+MATCH (oc2A:Concept)-[oldCleanup2 :TEACHES | :RELATED]->(oc2B)
+WHERE (oc2B:Example OR oc2B:Description OR oc2B:Link)
+CREATE (oc2A)-[newCleanup2:CONTAINS]->(oc2B)
+SET newCleanup2 = oldCleanup2
+WITH oldCleanup2
+DELETE oldCleanup2;

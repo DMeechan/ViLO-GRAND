@@ -70,8 +70,6 @@ To test this, update run this query: `MATCH (n) RETURN n`
 
 #### 3️⃣ Simplifying our Neo4j schema
 
-Coming soon™️
-
 ##### Mapping old schema to new schema
 
 ```YAML
@@ -133,10 +131,9 @@ Relations / edges:
     - teaches: TEACHES
     - implements: N/A
     - DesignExample: N/A
+```
 
-# TODO: make sure all Concept -> Component relations are CONTAINS
-# TODO: remove duplicate edges
-
+```YAML
 New node schemas:
     - Module:
         - code
@@ -163,4 +160,27 @@ New node schemas:
         - (sometimes has Class1, Class2, Class3 too)
 ```
 
-See *MIGRATION-SCRIPT.MD*.
+###### Performing the migration
+
+I've written a script to perform the schema migration outlined above.
+
+> See *./exports/migrate.cypher*
+
+1. Set up a Neo4j database (you can do this easily using Neo4j Desktop if preferred)
+2. Download [Neo4j Community Server](https://neo4j.com/download-center/#panel2-2) to use the `Cypher Shell` tool - I'm using `Neo4j 3.5.4 (tar)`
+3. Ensure that the Java 8 JDK is installed because `bin/cypher-shell` (the file we're using), requires it 
+4. Run the following command (substituting the path for the cypher-shell file, migrate.cypher file, and database connection info):
+
+```bash
+cat /PATH/TO/migrate.cypher | /PATH/TO/bin/cypher-shell -u USERNAME -p PASSWORD -a ADDRESS --format plain
+```
+
+For example, my command looks like this:
+
+```bash
+cat backend/exports/migrate.cypher | neo4j-shells/bin/cypher-shell -u neo4j -p letmein -a bolt://localhost:7687 --format plain
+```
+
+You should see numerous newlines appear. If so, it probably worked.
+
+TODO: remove duplicate relations (10 total)
