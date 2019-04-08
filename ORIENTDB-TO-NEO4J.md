@@ -103,20 +103,17 @@ Nodes / vectors:
         - Label: DELETE
         # 34 Econ Resources contain both Label & Body fields
         # the remaining 278 contain Body but Label == "null" OR null
-        # body = Label + ": " + Body
     - Resource: Link
         - Body: body
         - Label: DELETE
         # 4 Econ Resources contain both Label & Body fields
         # for the remaining 175: Body contains a URL and Label == "null"
-        # body = Label + ": " + Body
     - Module: Module
         - ModuleCode: code
     - Lecture: Lecture
         - Number: number
 
-# 'Python' nodes don't exist
-# But I can't find any 'Data' nodes, which might indicate lost data
+# 'Python' nodes don't exist and 'Data' is a superclass so it won't exist in Neo4j
 
 Relations / edges:
     - CSError: CONTAINS

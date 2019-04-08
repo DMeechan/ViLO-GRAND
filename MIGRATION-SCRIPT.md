@@ -3,6 +3,10 @@
 > [Cypher Cheatsheet](https://gist.github.com/DaniSancas/1d5265fc159a95ff457b940fc5046887)
 > [Useful resource](https://dzone.com/articles/tips-for-fast-batch-updates-of-graph-structures-wi)
 
+## Nodes
+
+### Resources
+
 Entity => Resource
 
 ```java
@@ -16,20 +20,13 @@ REMOVE n:Entity
 SET n:Resource
 ```
 
-Concept => Concept
+### Concepts
+
+Concept & Construct => Concept
 
 ```java
-MATCH (n: Concept)
-WHERE n.title IS NULL
-SET n.title = n.Label
-REMOVE n.Label
-```
-
-Construct => Concept
-
-```java
-MATCH (n: Construct)
-WHERE n.title IS NULL
+MATCH (n)
+WHERE (n:Concept OR n: Construct) AND n.title IS NULL
 SET n.title = n.Label
 REMOVE n.Label
 REMOVE n:Construct
@@ -47,6 +44,8 @@ REMOVE n:Theme
 SET n:Concept
 ```
 
+### Components (Examples, Descriptions, Links)
+
 Example AND Error => Example
 
 ```java
@@ -57,23 +56,46 @@ SET n.explanation = n.Explanation
 REMOVE n.Body
 REMOVE n.Explanation
 REMOVE n.Label
+REMOVE n:Error
+SET n:Example
+```
+
+FullExample => Example
+
+> Find and set Class1, Class2, and Class3 to "" if they're currently "null"
+
+```java
+MATCH (n:FullExample)
+WHERE n.Class1 = "null"
+SET n.Class1 = ""
+
+MATCH (n:FullExample)
+WHERE n.Class2 = "null"
+SET n.Class2 = ""
+
+MATCH (n:FullExample)
+WHERE n.Class3 = "null"
+SET n.Class3 = ""
+```
+
+> Now append Class1, Class2, and Class3 to create our 'body' field
+
+```java
+MATCH (n: FullExample)
+WHERE n.body IS NULL
+SET n.body = n.Class1 + n.Class2 + n.Class3
+REMOVE n.Class1
+REMOVE n.Class2
+REMOVE n.Class3
+REMOVE n:FullExample
+SET n:Example
 ```
 
 Discussion => Description
 
 ```java
 MATCH (n: Discussion)
-WHERE n.body IS NULL AND NOT n.Label = "null" AND n.Label IS NOT null
-SET n.body = n.Label + ": " + n.Body
-REMOVE n.Body
-REMOVE n.Label
-REMOVE n:Discussion
-SET n:Description
-```
-
-```java
-MATCH (n: Discussion)
-WHERE n.body IS NULL AND (n.Label IS null OR n.Label = "null")
+WHERE n.body IS NULL
 SET n.body = n.Body
 REMOVE n.Body
 REMOVE n.Label
@@ -93,6 +115,8 @@ REMOVE n:Resource
 SET n:Link
 ```
 
+### Modules & Lectures
+
 Module => Module
 
 ```java
@@ -109,29 +133,7 @@ SET n.number = n.Number
 REMOVE n.Number
 ```
 
-<!-- Fixing Description nodes having `Label` and `Explanation` fields
-
-```java
-MATCH (n: Description)
-WHERE n.Label = "null"
-REMOVE n.Label
-```
-
-```java
-MATCH (n: Description)
-WHERE n.Explanation = "null"
-REMOVE n.Explanation
-```
-
-```java
-MATCH (n: Description)
-WHERE n.Explanation IS NOT NULL
-SET n.body = n.body + ": " + n.Explanation
-REMOVE n.Explanation
-RETURN n
-``` -->
-
-###### Migrating relations
+## Relations
 
 **CONTAINS**: CSError, CSExample, CoreError, CoreExample, HasCode, MTError, MTExample, appear, explain, produce, require
 
@@ -185,7 +187,12 @@ WITH oldRelation
 DELETE oldRelation
 ```
 
-What's left?
+Replace any ()-[:CONTAINS]->(:CONCEPT) relations to [:TEACHES]
 
-- FullExample
-- Error
+```java
+MATCH (a)-[oldRelation:CONTAINS]->(b:Concept)
+CREATE (a)-[newRelation:TEACHES]->(b)
+SET newRelation = oldRelation
+WITH oldRelation
+DELETE oldRelation
+```
