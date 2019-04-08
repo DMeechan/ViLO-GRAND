@@ -133,157 +133,49 @@ RETURN n
 
 ###### Migrating relations
 
-CSError => CONTAINS
+**CONTAINS**: CSError, CSExample, CoreError, CoreExample, HasCode, MTError, MTExample, appear, explain, produce, require
 
 ```java
-MATCH (a)-[oldRelation:CSError]->(b)
+MATCH (a)-[oldRelation :CSError
+ | :CSExample
+ | :CoreError
+ | :CoreExample
+ | :HasCode
+ | :MTError
+ | :MTExample
+ | :appear
+ | :explain
+ | :produce
+ | :require
+]->(b)
 CREATE (a)-[newRelation:CONTAINS]->(b)
 SET newRelation = oldRelation
 WITH oldRelation
 DELETE oldRelation
 ```
 
-CSExample => CONTAINS
+**RELATED**: Related, exRelated
 
 ```java
-MATCH (a)-[oldRelation:CSExample]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
+MATCH (a)-[oldRelation :Related | :exRelated]->(b)
+CREATE (a)-[newRelation:RELATED]->(b)
 SET newRelation = oldRelation
 WITH oldRelation
 DELETE oldRelation
 ```
 
-CoreError => CONTAINS
+**TEACHES**: contain, teaches
 
 ```java
-MATCH (a)-[oldRelation:CoreError]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-CoreExample => CONTAINS
-
-```java
-MATCH (a)-[oldRelation:CoreExample]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-HasCode => CONTAINS
-
-```java
-MATCH (a)-[oldRelation:HasCode]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-MTError => CONTAINS
-
-```java
-MATCH (a)-[oldRelation:MTError]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-MTExample => CONTAINS
-
-```java
-MATCH (a)-[oldRelation:MTExample]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-appear => CONTAINS
-
-```java
-MATCH (a)-[oldRelation:appear]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-contain => CONTAINS
-
-```java
-MATCH (a)-[oldRelation:contain]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-explain => CONTAINS
-
-```java
-MATCH (a)-[oldRelation:explain]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-produce => CONTAINS
-
-```java
-MATCH (a)-[oldRelation:produce]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-require => CONTAINS
-
-```java
-MATCH (a)-[oldRelation:require]->(b)
-CREATE (a)-[newRelation:CONTAINS]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-Related => TEACHES
-
-```java
-MATCH (a)-[oldRelation:Related]->(b)
+MATCH (a)-[oldRelation :contain | :teaches]->(b)
+RETURN a,oldRelation,b
 CREATE (a)-[newRelation:TEACHES]->(b)
 SET newRelation = oldRelation
 WITH oldRelation
 DELETE oldRelation
 ```
 
-exRelated => TEACHES
-
-```java
-MATCH (a)-[oldRelation:exRelated]->(b)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-teaches => TEACHES
-
-```java
-MATCH (a)-[oldRelation:teaches]->(b)
-CREATE (a)-[newRelation:TEACHES]->(b)
-SET newRelation = oldRelation
-WITH oldRelation
-DELETE oldRelation
-```
-
-Change out any ()-[:CONTAINS]->(CONCEPT) relations to [:TEACHES]
+Replace any ()-[:CONTAINS]->(:CONCEPT) relations to [:TEACHES]
 
 ```java
 MATCH (a)-[oldRelation:CONTAINS]->(b:Concept)
