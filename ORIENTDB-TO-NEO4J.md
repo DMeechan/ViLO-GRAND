@@ -184,3 +184,46 @@ cat backend/exports/migrate.cypher | neo4j-shells/bin/cypher-shell -u neo4j -p l
 You should see numerous newlines appear. If so, it probably worked.
 
 TODO: remove duplicate relations (10 total)
+
+## Migrating Neo4j back to OrientDB
+
+1. Download OrientDB to Neo4j Importer - see [here](https://orientdb.com/docs/last/OrientDB-Neo4j-Importer.html)
+2. Ensure you still have your `neo4j-shells` folder from the previous migration (OrientDB => Neo4j) - you'll need it
+3. Dive into your Neo4j files to find your database's `Graph.db` folder - it was here on my Mac: `/Users/dmeechan/Library/Application\ Support/Neo4j\ Desktop/Application/neo4jDatabases/database-4fe43820-d0c3-4d42-86c7-df862446c793/installation-3.5.4/data/databases`)
+4. Now run the command below, passing in the absolute paths to your `neo4j-shells/lib` folder, `graph.db` folder, and `orientdb database folder`
+
+```bash
+./orientdb-neo4j-importer.sh \
+  -neo4jlibdir /YOUR_PATH/neo4j-shells/lib \
+  -neo4jdbdir /YOUR_PATH/graph.db \
+  -odbdir /YOUR_PATH/orientdb-3.0.17/databases/neo4j_import
+```
+
+For example, mine looked like this:
+
+```bash
+./orientdb-neo4j-importer.sh \
+  -neo4jlibdir /Users/dmeechan/Projects/vilo/neo4j-shells/lib \
+  -neo4jdbdir /Users/dmeechan/Projects/vilo/graph.db \
+  -odbdir /Users/dmeechan/Projects/vilo/orientdb-3.0.17/databases/neo4j_import
+```
+
+I encountered a weird Java problem:
+
+```java
+Initializing Neo4j...Done
+
+Initializing OrientDB...Exception in thread "main" java.lang.NoClassDefFoundError: com/tinkerpop/blueprints/impls/orient/OrientGraphFactory
+	at com.orientechnologies.orient.neo4jimporter.ONeo4jImporterInitializer.invoke(ONeo4jImporterInitializer.java:94)
+	at com.orientechnologies.orient.neo4jimporter.ONeo4jImporter.execute(ONeo4jImporter.java:108)
+	at com.orientechnologies.orient.neo4jimporter.ONeo4jImporterMain.main(ONeo4jImporterMain.java:25)
+Caused by: java.lang.ClassNotFoundException: com.tinkerpop.blueprints.impls.orient.OrientGraphFactory
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:583)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
+	... 3 more
+```
+
+Solved it using this (under-appreciated) [Stackoverflow answer](https://stackoverflow.com/a/53669870/4752388): I downloaded [OrientDB GraphDB](https://mvnrepository.com/artifact/com.orientechnologies/orientdb-graphdb/3.0.17) and [Blueprints Core](https://mvnrepository.com/artifact/com.tinkerpop.blueprints/blueprints-core/2.6.0) JAR files and then put them in my `./neo4j-shells/lib` folder.
+
+It works now!
