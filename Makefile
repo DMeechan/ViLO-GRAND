@@ -27,16 +27,25 @@ help: ## Get info on what each 'make' command does.
 # DOCKER TASKS
 
 run: ## Spin up the project
-	docker-compose up -d
+	docker-compose up --force-recreate
+	docker image prune -f
 
-seed: ## Populate the Neo4j database with seed data (non functional ATM)
-	docker-compose run ${APP_API} npm run seedDb
+seed: ## Run a Node script to populate the Neo4j database with seed data
+	docker-compose run api npm run seedDb
 
 stop: ## Stop running containers
 	docker stop $(APP_API) $(APP_DB)
 
 remove: stop ## Stop and remove running containers
 	docker rm $(APP_API) $(APP_DB)
+
+restart: # Stop and then restart your containers
+	$(info Make: Restarting "$(ENV)" environment containers.)
+	@make -s stop
+	@make -s run
+
+clean: ## Nuke all images and volumes cached on your machine (might take a while)
+	@docker system prune --volumes --force
 
 # HELPERS
 

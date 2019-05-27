@@ -1,14 +1,14 @@
 /**
  * Import libraries to run the Apollo GraphQL server (on top of Express) and connect to neo4k
  */
-import { ApolloServer, gql } from 'apollo-server-express';
 import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
 import { v1 as neo4j } from 'neo4j-driver';
 import { makeAugmentedSchema } from 'neo4j-graphql-js';
 // import open from 'open';
 
 // Import our GraphQL type definitions and resolver functions
-import { typeDefs, resolvers } from './schema/graphql-schema';
+import { typeDefs } from './schema/graphql-schema';
 
 /**
  * Import all environment variables from the .env file
@@ -23,6 +23,7 @@ const {
   NEO4J_USER,
   NEO4J_PASSWORD,
 } = process.env;
+
 const app = express();
 
 /*
@@ -66,7 +67,6 @@ const driver = neo4j.driver(
 const server = new ApolloServer({
   context: { driver },
   schema,
-  resolvers,
   introspection: true,
   playground: true,
 });

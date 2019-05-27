@@ -37,18 +37,26 @@ Note that grand-stack-starter does not currently bundle a distribution of Neo4j.
 
 You can deploy to any service that hosts Node.js apps, but [Zeit Now](https://zeit.co/now) is a great easy to use service for hosting your app that has an easy to use free plan for small projects. 
 
-To deploy your GraphQL service on Zeit Now, first install [Now Desktop](https://zeit.co/download) - you'll need to provide an email address. Then run
+If you use Zeit Now, the `now.json` file defines the configuration for deploying.
 
-```
-now
+Set the now secrets for your Neo4j instance:
+
+```bash
+now secret add NEO4J_URI bolt+routing://<YOUR_NEO4J_INSTANCE_HERE>
+now secret add NEO4J_USER <YOUR_DATABASE_USERNAME_HERE>
+now secret add NEO4J_PASSWORD <YOUR_DATABASE_USER_PASSWORD_HERE>
 ```
 
-to deploy your GraphQL service on Zeit Now. Once deployed you'll be given a fresh URL that represents the current state of your application where you can access your GraphQL endpoint and GraphQL Playgound. For example: https://grand-stack-starter-api-pqdeodpvok.now.sh/
+Run `now` to deploy it.
+
+Once deployed you'll be given a fresh URL that represents the current state of your application where you can access your GraphQL endpoint and GraphQL Playgound. For example: https://some-example.now.sh/
 
 ## Seeding The Database
 
 Optionally you can seed the GraphQL service by executing mutations that will write sample data to the database:
 
 ```
-npm run seedDb
+make seed
 ```
+
+This runs `npm run seedDb` in the API container.

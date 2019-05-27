@@ -29,37 +29,52 @@ This is what a typical Neo4j CYPHER query and associated visualisation might loo
 
 ![neo4j database schema](https://i.imgur.com/Qx1JRO7.png)
 
-## Quickstart
+## Getting Started
 
-### Docker Compose
+> Install [Docker Desktop](https://www.docker.com/get-started)
 
-We can use `docker-compose` to quickly spin things up.
+### 🚢 Using Docker Compose
 
-api/.env:
+We can use `docker-compose` to quickly spin up the API server and Neo4j database.
+
+`Create an `api/.env` file and populate it with some values:
 
 ```
 NEO4J_URI=bolt://neo4j:7687
 NEO4J_USER=neo4j
 NEO4J_PASSWORD=letmein
 GRAPHQL_LISTEN_PORT=4000
-GRAPHQL_URI=http://api:4000
+GRAPHQL_URI=http://localhost:4000/graphql
+GRAPHQL_CONTAINER_URI=http://api:4000/graphql
 ```
 
-Now you can quickly start via:
+Now (from the projetc root directory) we can spin up the containers with:
 
 ```
-docker-compose up -d
+make run
 ```
 
-If you want to load the example DB after the services have been started:
+If you want to populate the DB with sample data after the services have been started:
 
 ```
-docker-compose run api npm run seedDb
+make seed
 ```
 
-### Neo4j
+To close the server, run:
 
-You need a Neo4j instance, e.g. a [Neo4j Sandbox](http://neo4j.com/sandbox), a local instance via [Neo4j Desktop](https://neo4j.com/download), [Docker](http://hub.docker.com/_/neo4j) or a [Neo4j instance on AWS, Azure or GCP](http://neo4j.com/developer/guide-cloud-deployment) or [Neo4j Cloud](http://neo4j.com/cloud)
+```
+make stop
+```
+
+Need help? Run:
+
+```
+make help
+```
+
+### 🤺 Manually (without Docker)
+
+If you don't use Docker, you'll need to run your own Neo4j instance, e.g. a [Neo4j Sandbox](http://neo4j.com/sandbox), a local instance via [Neo4j Desktop](https://neo4j.com/download), [Docker](http://hub.docker.com/_/neo4j) or a [Neo4j instance on AWS, Azure or GCP](http://neo4j.com/developer/guide-cloud-deployment) or [Neo4j Cloud](http://neo4j.com/cloud)
 
 For schemas using the `@cypher` directive (as in this repo) via [`neo4j-graphql-js`](https://github.com/neo4j-graphql/neo4j-graphql-js), you need to have the [APOC library](https://github.com/neo4j-contrib/neo4j-apoc-procedures) installed, which should be automatic in Sandbox, Cloud and is a single click install in Neo4j Desktop. If when using the Sandbox / cloud you encounter an issue where an error similar to `Can not be converted to long: org.neo4j.kernel.impl.core.NodeProxy, Location: [object Object], Path: users` appears in the console when running the React app, try installing and using Neo4j locally instead.
 
@@ -86,8 +101,7 @@ A good tutorial can be found here: https://www.youtube.com/watch?v=rPC71lUhK_I
 _Install dependencies_
 
 ```
-(cd ./ui && npm install)
-(cd ./api && npm install)
+cd ./api && npm install
 ```
 
 _Start API server_
@@ -95,3 +109,23 @@ _Start API server_
 ```
 cd ./api && npm start
 ```
+
+## 🚀 Deployment
+
+You can deploy to any service that hosts Node.js apps, but [Zeit Now](https://zeit.co/now) is a great easy to use service for hosting your app that has an easy to use free plan for small projects. 
+
+If you use Zeit Now, the `now.json` file defines the configuration for deploying.
+
+First download Now Desktop or Now CLI from [here](https://zeit.co/download).
+
+Next, set the now secrets for your Neo4j instance:
+
+```bash
+now secret add NEO4J_URI bolt+routing://<YOUR_NEO4J_INSTANCE_HERE>
+now secret add NEO4J_USER <YOUR_DATABASE_USERNAME_HERE>
+now secret add NEO4J_PASSWORD <YOUR_DATABASE_USER_PASSWORD_HERE>
+```
+
+Run `now` to deploy it.
+
+Once deployed you'll be given a fresh URL that represents the current state of your application where you can access your GraphQL endpoint and GraphQL Playgound. For example: https://some-example.now.sh/
