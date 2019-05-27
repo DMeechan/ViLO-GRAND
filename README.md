@@ -4,15 +4,14 @@ This project is using the [GRAND stack](https://grandstack.io): GraphQL, React, 
 
 There are three core components in the project:
 
-- `ui` - React web client
 - `api` - Apollo GraphQL server, running on Node.js
-- `neo4j` - database
+- `neo4j` - spin up a local Neo4j database using Docker
 
 [Video: hands on with the GRAND stack](http://www.youtube.com/watch?v=rPC71lUhK_I)
 
 ## Some backgound
 
-The core part of this project is the API server. The React app is just a demo and I've had more success with spinning up a Neo4j sandbox than running it locally.
+The core part of this project is the API server.
 
 > Why are we using a graph database like Neo4j?
 
@@ -95,14 +94,4 @@ _Start API server_
 
 ```
 cd ./api && npm start
-```
-
-### [`/ui`](./ui)
-
-This will start the GraphQL API in the foreground, so in another terminal session start the UI development server:
-
-_Start UI server_
-
-```
-cd ./ui && npm start
 ```

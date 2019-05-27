@@ -185,11 +185,11 @@ You should see numerous newlines appear. If so, it probably worked.
 
 TODO: remove duplicate relations (10 total)
 
-## Migrating Neo4j back to OrientDB
+# Migrating Neo4j back to OrientDB
 
 1. Download OrientDB to Neo4j Importer - see [here](https://orientdb.com/docs/last/OrientDB-Neo4j-Importer.html)
-2. Ensure you still have your `neo4j-shells` folder from the previous migration (OrientDB => Neo4j) - you'll need it
-3. Dive into your Neo4j files to find your database's `Graph.db` folder - it was here on my Mac: `/Users/dmeechan/Library/Application\ Support/Neo4j\ Desktop/Application/neo4jDatabases/database-4fe43820-d0c3-4d42-86c7-df862446c793/installation-3.5.4/data/databases`)
+2. Ensure you still have your `neo4j-shells` folder from the previous migration (OrientDB to Neo4j) - you'll need it
+3. Dive into your Neo4j files to find your database's `Graph.db` folder. This can be a little tricky to do, but I found it here on my Mac: `/Users/dmeechan/Library/Application\ Support/Neo4j\ Desktop/Application/neo4jDatabases/database-4fe43820-d0c3-4d42-86c7-df862446c793/installation-3.5.4/data/databases`)
 4. Now run the command below, passing in the absolute paths to your `neo4j-shells/lib` folder, `graph.db` folder, and `orientdb database folder`
 
 ```bash
