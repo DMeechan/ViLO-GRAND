@@ -1,12 +1,7 @@
 /**
  * Import libraries to run the Apollo GraphQL server and connect to neo4k
  */
-import {
-  ApolloServer,
-  gql,
-  makeExecutableSchema,
-  addMockFunctionsToSchema,
-} from 'apollo-server';
+import { ApolloServer, makeExecutableSchema } from 'apollo-server';
 import { v1 as neo4j } from 'neo4j-driver';
 import { augmentSchema } from 'neo4j-graphql-js';
 
@@ -19,6 +14,8 @@ import { typeDefs, resolvers } from './schema/graphql-schema';
  */
 import dotenv from 'dotenv';
 dotenv.config();
+
+console.log('☀️ Starting...');
 
 /**
  * Generate a GraphQLSchema instance using our type definitions (like `type Resouce {...}`)
@@ -69,9 +66,9 @@ const server = new ApolloServer({
  */
 const PORT = process.env.GRAPHQL_LISTEN_PORT;
 const HOST = process.env.GRAPHQL_HOST;
-console.log(`🛫 Attempting to start API server on ${HOST}:${PORT} `);
+console.log(`🛫 Attempting to start API server on port ${PORT}`);
 
 server
-  .listen(PORT, HOST)
+  .listen(PORT)
   .then(({ url }) => console.log(`🚀 GraphQL API server ready at ${url}`))
   .catch(error => console.error('Unable to create GraphQL server :(', error));
