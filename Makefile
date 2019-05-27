@@ -26,9 +26,11 @@ help: ## Get info on what each 'make' command does.
 
 # DOCKER TASKS
 
-# Build and run the container
 run: ## Spin up the project
 	docker-compose up -d
+
+seed: ## Populate the Neo4j database with seed data (non functional ATM)
+	docker-compose run ${APP_API} npm run seedDb
 
 stop: ## Stop running containers
 	docker stop $(APP_API) $(APP_DB)
