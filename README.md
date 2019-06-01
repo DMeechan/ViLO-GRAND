@@ -45,18 +45,23 @@ This is what a typical Neo4j CYPHER query and associated visualisation might loo
 
 ![neo4j database schema](https://i.imgur.com/8F25xQF.png)
 
-## Getting Started
-
-### 🤺 Manually (without Docker)
+## 💪🏻 Getting Started
 
 In theory, you should not need to perform any Neo4j queries. You should be able to do everything you need using GraphQL queries and mutations (which is much simpler).
 
-But first, we need to set up a few things.
+But first, we need to get things running. There are two ways to run this:
+
+- 🤺 Manually
+- 🚢 Using Docker
+
+When getting started for the first time, I suggest installing things manually so you get a feel for how the various components come together. Later, it may be easier to use Docker.
+
+### 🤺 Manually (without Docker)
 
 #### Overview
 
 1. Install Neo4j
-2. Create a database
+2. Create a database & install the APOC plugin
 3. Import our data to the database
 4. Launch the database
 5. Install Node.js
@@ -65,7 +70,7 @@ But first, we need to set up a few things.
 8. Set up the React web client
 9. Launch the web client
 
-##### Instructions (step by step)
+#### Instructions (step by step)
 
 First, open up Terminal and clone this repisitory by running:
 
@@ -73,7 +78,7 @@ First, open up Terminal and clone this repisitory by running:
 git clone https://github.com/DMeechan/ViLO-GRAND.git
 ```
 
-###### Running the Neo4j database
+##### Running the Neo4j database
 
 1. [Download Neo4j Desktop](https://neo4j.com/download/)
 2. Install and open Neo4j Desktop.
@@ -88,7 +93,7 @@ git clone https://github.com/DMeechan/ViLO-GRAND.git
 
 TODO: import the data somehow
 
-###### Running the server
+##### Running the server
 
 1. Install Node.js LTS from [here](https://nodejs.org/en/download/)
 2. Open up your `ViLO-GRAND` project folder in Terminal
@@ -97,11 +102,9 @@ TODO: import the data somehow
 5. Install dependencies: `npm install`
 6. Start the Node.js server: `npm run start`
 
-TODO: should `GRAPHQL_CONTAINER_URI` link to `localhost` or `api`?
-
 > Make sure you have the Neo4j database running (on port 7687) before starting your Node.js server. Otherwise, you may encounter problems.
 
-###### Running the web client
+##### Running the web client
 
 > You should already have Node.js LTS installed from the steps above. If you do not, install it from [here](https://nodejs.org/en/download/).
 
@@ -142,42 +145,4 @@ Need help? Run:
 
 ```
 make help
-```
-
-### 🤺 Manually (without Docker)
-
-If you don't use Docker, you'll need to run your own Neo4j instance, e.g. a [Neo4j Sandbox](http://neo4j.com/sandbox), a local instance via [Neo4j Desktop](https://neo4j.com/download), [Docker](http://hub.docker.com/_/neo4j) or a [Neo4j instance on AWS, Azure or GCP](http://neo4j.com/developer/guide-cloud-deployment) or [Neo4j Cloud](http://neo4j.com/cloud)
-
-For schemas using the `@cypher` directive (as in this repo) via [`neo4j-graphql-js`](https://github.com/neo4j-graphql/neo4j-graphql-js), you need to have the [APOC library](https://github.com/neo4j-contrib/neo4j-apoc-procedures) installed, which should be automatic in Sandbox, Cloud and is a single click install in Neo4j Desktop. If when using the Sandbox / cloud you encounter an issue where an error similar to `Can not be converted to long: org.neo4j.kernel.impl.core.NodeProxy, Location: [object Object], Path: users` appears in the console when running the React app, try installing and using Neo4j locally instead.
-
-#### Sandbox setup
-
-A good tutorial can be found here: https://www.youtube.com/watch?v=rPC71lUhK_I
-
-#### Local setup
-
-1. [Download Neo4j Desktop](https://neo4j.com/download/)
-2. Install and open Neo4j Desktop.
-3. Create a new DB by clicking "New Graph", and clicking "create local graph".
-4. Set password to "letmein" (as suggested by `api/.env`), and click "Create".
-5. Make sure that the default credentials in `api/.env` are used. Leave them as follows: `NEO4J_URI=bolt://localhost:7687 NEO4J_USER=neo4j NEO4J_PASSWORD=letmein`
-6. Click "Manage".
-7. Click "Plugins".
-8. Find "APOC" and click "Install".
-9. Click the "play" button at the top of left the screen, which should start the server. _(screenshot 2)_
-10. Wait until it says "RUNNING".
-11. Proceed forward with the rest of the tutorial.
-
-### [`/api`](./api)
-
-_Install dependencies_
-
-```
-cd ./api && npm install
-```
-
-_Start API server_
-
-```
-cd ./api && npm start
 ```

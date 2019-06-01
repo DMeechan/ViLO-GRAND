@@ -2,6 +2,8 @@
 
 Learn more on [this page](https://neo4j.com/docs/cypher-manual/current/clauses/match/) in the Neo4j docs.
 
+Created with help from @DaniSancas's [Neo4j Cypher cheatsheet](https://gist.github.com/DaniSancas/1d5265fc159a95ff457b940fc5046887).
+
 ### Finding all nodes
 
 > View all nodes

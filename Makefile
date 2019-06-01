@@ -1,21 +1,20 @@
 # Adapted from:
 # https://gist.github.com/mpneuried/0594963ad38e68917ef189b4e6a269db
 
- APP_API="vilo-api"
+APP_API="vilo-api"
 APP_DB="vilo-neo4j"
 
- # Import config.env file... we don't need this right now
+# Import config.env file... we don't need this right now
 
- # You can change the default config with `make cnf="config_special.env" build`
+# You can change the default config with `make cnf="config_special.env" build`
 # cnf ?= config.env
 # include $(cnf)
 # export $(shell sed 's/=.*//' $(cnf))
 
- # grep the version from the mix file
+# grep the version from the mix file
 # VERSION=$(shell ./version.sh)
 
- # HELP
-# This will output the help for each task
+# HELP - this will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
 
@@ -24,7 +23,7 @@ APP_DB="vilo-neo4j"
 
  .DEFAULT_GOAL := help
 
- # DOCKER TASKS
+# DOCKER TASKS
 
  run: ## Spin up the project
 	docker-compose up --force-recreate
@@ -47,7 +46,7 @@ APP_DB="vilo-neo4j"
  clean: ## Nuke all images and volumes cached on your machine (might take a while)
 	@docker system prune --volumes --force
 
- # HELPERS
+# HELPERS
 
 # version: ## output to version
 # 	@echo $(VERSION) 

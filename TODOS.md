@@ -1,6 +1,8 @@
 # TODOS
 
-1. Check the reverse migration works
-2. Add beginner instructions to README
-3. Update makefile
-4. Add React UI example
+[ ] Check the reverse migration works
+[x] Add beginner instructions to README
+[x] Update makefile
+[ ] Add React UI example
+[ ] Update GraphQL schema
+[ ] Test it works
